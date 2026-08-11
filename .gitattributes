@@ -1,0 +1,21 @@
+# Mirrored HTML is captured output — never normalise line endings or it stops
+# matching the source bytes.
+*.html   -text
+*.css    -text
+*.js     -text
+
+# Binary assets
+*.png    binary
+*.jpg    binary
+*.jpeg   binary
+*.webp   binary
+*.gif    binary
+*.svg    -text
+*.ico    binary
+*.woff   binary
+*.woff2  binary
+*.ttf    binary
+*.otf    binary
+*.pdf    binary
+*.mp4    binary
+*.webm   binary
