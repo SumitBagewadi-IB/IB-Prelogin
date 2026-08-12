@@ -1,0 +1,169 @@
+/* ============ Section 5: FAQ ================================================
+ *
+ * Accordion-style FAQ section with dark background and centered layout,
+ * matching stock page design. Own file so it's not lost on rebuild.
+ */
+
+.s5-section {
+  position: relative;
+  width: 100%;
+  padding-top: 56px;
+  padding-bottom: 56px;
+  overflow: hidden;
+  background-color: #0b0b0f;
+  background-image: url("https://image.indiabullssecurities.com/prelogin/assets/faqdarkbg.png");
+  background-size: cover;
+  background-position: bottom;
+  background-repeat: no-repeat;
+  color: #fff;
+}
+
+@media (max-width: 768px) {
+  .s5-section {
+    padding-top: 24px;
+    padding-bottom: 24px;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .s5-section {
+    padding-top: 40px;
+    padding-bottom: 40px;
+  }
+}
+
+.s5-pad {
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+.s5 {
+  --s5-accent: #00e07a;
+  --s5-body: #b9c0cc;
+  color: var(--global-text-13, #d1d5db);
+  scroll-margin-top: 120px;
+}
+
+.s5-head {
+  max-width: 860px;
+  margin: 0 auto 20px;
+  text-align: center;
+}
+
+.s5-head h2 {
+  margin: 0;
+  font-size: 24px;
+  line-height: 1.2;
+  font-weight: 800;
+  color: #fff;
+}
+
+@media (min-width: 769px) {
+  .s5-head h2 {
+    font-size: 40px;
+  }
+}
+
+@media (min-width: 1025px) {
+  .s5-head h2 {
+    font-size: 48px;
+  }
+}
+
+.s5-list {
+  max-width: 860px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.s5-item {
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 12px;
+  background: rgba(0,0,0,.3);
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.s5-item.is-open {
+  background: rgba(0,0,0,.4);
+  border-color: rgba(0,224,122,.3);
+}
+
+.s5-trigger {
+  width: 100%;
+  padding: 18px 24px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  font: inherit;
+  text-align: left;
+  transition: background 0.2s ease;
+}
+
+.s5-trigger:hover {
+  background: rgba(255,255,255,.04);
+}
+
+.s5-trigger:focus-visible {
+  outline: 2px solid var(--s5-accent);
+  outline-offset: -2px;
+}
+
+.s5-q {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.5;
+  color: #fff;
+  flex: 1;
+  padding-right: 32px;
+}
+
+.s5-icon {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  transition: transform 0.3s ease;
+}
+
+.s5-item.is-open .s5-icon {
+  transform: rotate(180deg);
+}
+
+.s5-ans {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+  border-top: 1px solid rgba(0,224,122,.2);
+}
+
+.s5-item.is-open .s5-ans {
+  max-height: 600px;
+}
+
+.s5-a {
+  margin: 0;
+  padding: 16px 24px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--s5-body);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .s5-item,
+  .s5-trigger,
+  .s5-icon,
+  .s5-ans {
+    transition: none;
+  }
+}

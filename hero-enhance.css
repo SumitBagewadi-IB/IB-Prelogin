@@ -1,0 +1,287 @@
+/* ============ Hero Section Enhancement ============ */
+
+/* Container improvements */
+.tp-stage {
+  position: relative !important;
+  transition: all 0.4s cubic-bezier(0.22, 0.61, 0.36, 1) !important;
+}
+
+.tp-stage:hover {
+  transform: translateY(-4px) !important;
+}
+
+/* Device improvements - Glow and shadow effects.
+   No border-radius or overflow here: frame.png carries the monitor's own
+   silhouette in its alpha channel, so clipping the box would shave the bezel. */
+.tp-device {
+  position: relative !important;
+  transition: all 0.5s cubic-bezier(0.22, 0.61, 0.36, 1) !important;
+  box-shadow: 0 0 30px rgba(0, 224, 122, 0.1) !important;
+}
+
+.tp-stage:hover .tp-device {
+  box-shadow: 0 0 40px rgba(0, 224, 122, 0.2), 0 20px 50px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* THE corner rule, and the one that has broken twice. The bezel's inner corners
+   are rounded by ~7px measured at frame.png's native 2000px width, so the glass
+   must round to match or its square corner shows as a dark wedge through the
+   anti-aliased curve. The radius has to be a PERCENTAGE, never px: the screen box
+   is 1911x830 at native, so 8px is 8/1911 = 0.42% across and 8/830 = 0.97% down.
+   Splitting the two keeps the corner circular on a 2.3:1 box, where one percentage
+   would render an ellipse. A fixed 12px was the original bug -- at ~640px wide the
+   bezel corner is only ~2px, so 12px over-rounded the glass and the page background
+   showed through inside every corner. 8px sits a hair proud of the measured 7px so
+   the glass tucks under the opaque part of the curve: no wedge, and no gap. */
+.tp-screen {
+  position: absolute !important;
+  background: #0b0f16 !important;
+  border-radius: 0.42% / 0.97% !important;
+  overflow: hidden !important;
+  transition: all 0.4s cubic-bezier(0.22, 0.61, 0.36, 1) !important;
+}
+
+/* A hairline inner lip. With the bezel back this covers the sub-pixel seam where
+   glass meets frame and reads as the screen sitting INSIDE the monitor rather than
+   pasted flush onto it. Above the widget layers (max z-index 3), below the bezel
+   (z-index 4), and never takes pointer events. */
+.tp-screen::after {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  border-radius: inherit !important;
+  pointer-events: none !important;
+  z-index: 3 !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.07),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.05) !important;
+}
+
+.tp-screen.tp-in {
+  animation: screenFadeIn 0.8s ease-out !important;
+}
+
+.tp-stage:hover .tp-screen {
+  box-shadow: 0 0 25px rgba(0, 224, 122, 0.15) !important;
+}
+
+/* Widget hover effects */
+.tp-w {
+  transition: all 0.3s cubic-bezier(0.22, 0.61, 0.36, 1) !important;
+  opacity: 0 !important;
+}
+
+.tp-screen.tp-in .tp-w {
+  opacity: 1 !important;
+}
+
+.tp-screen.tp-ready .tp-w:hover {
+  opacity: 1 !important;
+  transform: scale(1.02) !important;
+  filter: brightness(1.15) !important;
+}
+
+/* object-fit is "fill", not "cover". frame.png is 2000x899 and .tp-device is
+   aspect-ratio 2.2247 -- the same number -- so fill maps the bezel 1:1 onto the box
+   and the calibrated screen inset lands inside the cut-out exactly. "cover" crops
+   the moment the computed ratio rounds even slightly, which walks the bezel a
+   sub-pixel off the glass and reopens a seam at the corners. */
+.tp-frame {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  display: block !important;
+  object-fit: fill !important;
+  z-index: 4 !important;
+  pointer-events: none !important;
+  user-select: none !important;
+}
+
+/* Legend/Buttons improvements */
+.tp-legend {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 12px !important;
+  margin-top: 20px !important;
+  justify-content: center !important;
+  opacity: 1 !important;
+  animation: slideUp 0.6s ease-out 0.3s !important;
+}
+
+/* Neutral, not green. Every accent on these four was the same #00e07a -- border,
+   fill, glow and active text -- so hovering lit a green ring on the button at the
+   same moment a green rectangle appeared on the screenshot. Feedback now comes
+   from contrast and movement: the border and fill brighten in plain white-alpha,
+   and the button lifts. Nothing here emits a hue. */
+.tp-chip {
+  font-size: 13px !important;
+  padding: 10px 18px !important;
+  border-radius: 999px !important;
+  cursor: pointer !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.18) !important;
+  background: rgba(255, 255, 255, 0.04) !important;
+  color: #fff !important;
+  font-weight: 500 !important;
+  transition: all 0.3s cubic-bezier(0.22, 0.61, 0.36, 1) !important;
+  white-space: nowrap !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+.tp-chip:hover {
+  border-color: rgba(255, 255, 255, 0.42) !important;
+  background: rgba(255, 255, 255, 0.10) !important;
+  box-shadow: none !important;
+  transform: translateY(-2px) scale(1.03) !important;
+}
+
+.tp-chip.tp-active {
+  border-color: rgba(255, 255, 255, 0.60) !important;
+  background: rgba(255, 255, 255, 0.14) !important;
+  box-shadow: none !important;
+  color: #fff !important;
+  transform: translateY(-3px) !important;
+}
+
+/* Keyboard focus must stay visible, and must not be the removed green either. */
+.tp-chip:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.85) !important;
+  outline-offset: 2px !important;
+}
+
+/* One definition for every theme, deliberately. The label always floats over the
+   terminal screenshot, which is dark in all cases, so a dark panel with light grey
+   text is legible in every combination and needs no theme branch. That also closes
+   a real inconsistency: the site themes by CLASS (defaultTheme "light"), while this
+   file used to branch on prefers-color-scheme, the OS setting. Those are
+   independent signals, so a viewer running the site in light mode on a dark-mode
+   Mac got a different label than everyone else.
+   z-index clears the screen's overlay layers so nothing washes over the label. */
+.tp-tag {
+  z-index: 8 !important;
+  background: rgba(12, 14, 18, 0.90) !important;
+  backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  border-radius: 10px !important;
+  padding: 10px 16px !important;
+  font-size: 13px !important;
+  line-height: 1.4 !important;
+  white-space: normal !important;
+  color: #e8eaed !important;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.55) !important;
+  animation: tagSlideIn 0.4s cubic-bezier(0.22, 0.61, 0.36, 1) !important;
+}
+
+.tp-tag.tp-show {
+  opacity: 1 !important;
+}
+
+/* Neutral grey, no green. Hierarchy comes from weight and size, not hue. Pure #fff
+   is avoided on purpose so the label reads as part of the terminal rather than a
+   bright chip stuck on top of it. */
+.tp-tag b {
+  color: #e8eaed !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.5px !important;
+}
+
+.tp-tag span {
+  color: rgba(232, 234, 237, 0.66) !important;
+  font-size: 12px !important;
+}
+
+/* Container hover state */
+.tp-clip {
+  transition: all 0.4s cubic-bezier(0.22, 0.61, 0.36, 1) !important;
+}
+
+.tp-clip:hover {
+  --tp-glow: rgba(0, 224, 122, 0.2);
+}
+
+/* Animations */
+@keyframes screenFadeIn {
+  from {
+    opacity: 0;
+    filter: blur(10px);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes tagSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Close the dead space above the monitor, desktop only.
+   Measured at 1440x900: the hero row had padding-top 210px AND min-height 900px --
+   a full viewport, from min-h-screen. Because the row is align-items:center, the
+   columns floated to the middle of that over-tall box, so the stage started at
+   366px: 210px of padding plus another 156px of centring slack. Dropping the
+   viewport min-height lets the row size to its tallest column instead, and 190px of
+   padding still clears the fixed 84px header and the absolutely-positioned
+   breadcrumb, whose bottom edge measures 170px. Result: 366px -> 190px.
+   Scoped to >=1024px on purpose. Tablet and mobile already compute min-height 0 and
+   start the stage at 240px and 400px respectively, so they need no help and must not
+   be disturbed. .tp-clip is our own hook, added to this row by improve.js, so this
+   cannot leak onto another page's hero. */
+@media (min-width: 1024px) {
+  .tp-clip {
+    min-height: 0 !important;
+    padding-top: 190px !important;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .tp-chip {
+    padding: 8px 14px !important;
+    font-size: 12px !important;
+  }
+
+  .tp-stage:hover {
+    transform: translateY(-2px) !important;
+  }
+}
+
+/* Dark mode adjustments */
+@media (prefers-color-scheme: dark) {
+  .tp-screen {
+    box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.9) !important;
+  }
+
+  .tp-stage:hover .tp-screen {
+    box-shadow:
+      inset 0 0 30px rgba(0, 0, 0, 0.9),
+      0 0 40px rgba(0, 224, 122, 0.25) !important;
+  }
+}
+
+/* The light-mode block that stood here is deliberately gone.
+   It re-introduced two bugs. Its .tp-device rules used filter: drop-shadow with
+   the green accent, and drop-shadow traces the element's alpha silhouette rather
+   than its box, so the glow escaped the hero and bled onto the option chain in
+   Section 3. Replacing that with box-shadow on the base rule only fixed the
+   dark path; this block kept the old behaviour alive for anyone whose OS was set
+   to light. Its .tp-tag rules are also gone now that the label has a single
+   theme-independent definition above. */

@@ -1,0 +1,92 @@
+
+/* ================= Trade Pro hero: monitor + live widget canvas ========= */
+.tp-stage{position:relative;width:100%}
+/* Two ratios in play, and mixing them up is what breaks the border.
+   The DEVICE carries frame.png's ratio (2000x899 = 2.2247) because the bezel image
+   defines the outer box. The SCREEN is then inset to the bezel's cut-out, measured
+   off frame.png's alpha channel: the hole is x 46..1956, y 57..886, which is
+   left 46/2000 = 2.300%, top 57/899 = 6.340%, 1911/2000 = 95.500% wide and
+   830/899 = 92.214% tall. That inset lands the glass at 2.2247 x 0.955 / 0.92214 =
+   2.304, exactly canvas.png's own 1910/829, so the widget slices fill it with no
+   stretch. Change one number here and the screen either stretches or slips out
+   from under the bezel. */
+.tp-device{position:relative;width:100%;aspect-ratio:2.2247;
+  transform-origin:center center;
+  transition:transform .55s cubic-bezier(.2,.8,.3,1)}
+.tp-frame{position:absolute;inset:0;width:100%;height:100%;z-index:4;
+  pointer-events:none;user-select:none}
+
+.tp-screen{position:absolute;overflow:hidden;background:#0b0f16;
+  left:2.300%;top:6.340%;width:95.500%;height:92.214%}
+
+.tp-part{position:absolute;background-image:var(--tp-src);background-repeat:no-repeat;
+  opacity:0;will-change:transform,opacity}
+.tp-chrome{left:0;top:0;width:100%;height:10.8%}
+.tp-w{top:10.8%;height:89.2%;transform:translate3d(0,22px,0) scale(.985)}
+
+/* ---- entry: staggered assemble (delays live ONLY here) ---- */
+.tp-screen.tp-in .tp-chrome{opacity:1;transition:opacity .45s ease .05s}
+.tp-screen.tp-in .tp-w{opacity:1;transform:none;
+  transition:transform .7s cubic-bezier(.18,.9,.28,1), opacity .5s ease}
+.tp-screen.tp-in .tp-w:nth-of-type(2){transition-delay:.08s}
+.tp-screen.tp-in .tp-w:nth-of-type(3){transition-delay:.18s}
+.tp-screen.tp-in .tp-w:nth-of-type(4){transition-delay:.28s}
+.tp-screen.tp-in .tp-w:nth-of-type(5){transition-delay:.38s}
+
+/* ---- ready: hover must be instant, so drop every delay ---- */
+.tp-screen.tp-ready .tp-w{
+  transition:opacity .18s linear, transform .18s ease-out;
+  transition-delay:0s!important;cursor:pointer}
+.tp-screen.tp-ready.tp-dim .tp-w{opacity:.28}
+/* No green outline. The green 1px rule that sat here drew a hard rectangle across
+   the middle of the screenshot, cutting through the widget it was meant to point
+   at. Isolation alone reads better: the other three panels drop to .28 opacity and
+   this one lifts, so the eye goes straight to it without a box around it. */
+.tp-screen.tp-ready.tp-dim .tp-w.tp-on{opacity:1;z-index:3;
+  transform:translateY(-4px)}
+
+/* ---- label ---- */
+.tp-tag{position:absolute;z-index:6;pointer-events:none;
+  transform:translateX(-50%);            /* fixed: never animated, so no clash */
+  background:rgba(8,13,22,.92);backdrop-filter:blur(8px);
+  border:1px solid rgba(255,255,255,.16);border-radius:999px;
+  padding:6px 13px;font-size:12.5px;line-height:1.15;white-space:nowrap;
+  color:#fff;box-shadow:0 8px 24px rgba(0,0,0,.5);
+  opacity:0;transition:opacity .16s linear}
+.tp-tag.tp-show{opacity:1}
+.tp-tag b{color:#00e07a;font-weight:600}
+.tp-tag span{opacity:.75}
+
+.tp-legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;justify-content:center}
+.tp-chip{font-size:12px;padding:6px 13px;border-radius:999px;cursor:pointer;
+  border:1px solid rgba(255,255,255,.16);color:var(--global-text-2,#fff);
+  background:rgba(255,255,255,.04);transition:background .15s,border-color .15s}
+.tp-chip:hover,.tp-chip.tp-active{border-color:rgba(0,224,122,.75);
+  background:rgba(0,224,122,.14)}
+
+/* Sit inside the hero column rather than bleeding past the viewport: with the
+   stand removed the device is short and wide, so the bleed overpowered the
+   copy instead of balancing it. */
+.tp-stage{width:100%;max-width:640px;margin-inline:auto}
+@media (min-width:1024px){
+  .tp-stage{max-width:none;margin-right:0}
+  .tp-device{max-width:96%;margin-left:auto}
+}
+
+/* The bleed deliberately exceeds its column. Clip it at the hero row: without
+   this, hovering a widget past the viewport edge made an ancestor scroll its
+   own content sideways, which read as the whole page shifting. */
+.tp-clip{overflow-x:clip}
+body{overflow-x:hidden;overflow-x:clip}
+.tp-nowrap{white-space:nowrap}
+
+@media (prefers-reduced-motion:reduce){
+  .tp-part{opacity:1!important;transform:none!important;transition:none!important}
+  .tp-device{transition:none}
+}
+@media (max-width:767px){ .tp-legend{display:none} }
+
+/* On a narrow screen the full label is wider than the device itself, so no
+   amount of clamping keeps it inside — cap its width and drop the note. */
+.tp-tag{max-width:calc(100% - 16px);overflow:hidden;text-overflow:ellipsis}
+@media (max-width:639px){ .tp-tag span{display:none} }
