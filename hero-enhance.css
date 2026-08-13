@@ -149,31 +149,38 @@
   outline-offset: 2px !important;
 }
 
-/* ---- Light Theme Only: Dark buttons for visibility ---- */
-/* By default (no media query), use dark theme styling (white buttons).
-   Only override for explicit light theme. */
-@media (prefers-color-scheme: light) {
-  .tp-chip {
-    border-color: rgba(11, 13, 16, 0.25) !important;
-    background: rgba(11, 13, 16, 0.08) !important;
-    color: rgba(11, 13, 16, 0.85) !important;
-  }
+/* ---- Light theme override, keyed on the SITE's own toggle ---- */
+/* The site themes itself by setting data-theme="light"/"dark" on <html> via its
+   own sun/moon button -- that state has nothing to do with the OS-level
+   prefers-color-scheme media query. An earlier version of this rule used that
+   media query, so a browser with light-mode OS settings forced dark text even
+   while the site itself was in its default dark theme: the buttons went
+   invisible in the site's actual dark theme, which is the bug that got reported.
+   Confirmed live by toggling the site's own theme button and reading
+   document.documentElement.getAttribute('data-theme') before/after: it flips
+   dark -> light while prefers-color-scheme never changes. This exact class of
+   bug was already caught once on .tp-tag above -- reintroducing it here on
+   .tp-chip was the regression. */
+html[data-theme="light"] .tp-chip {
+  border-color: rgba(11, 13, 16, 0.25) !important;
+  background: rgba(11, 13, 16, 0.08) !important;
+  color: rgba(11, 13, 16, 0.85) !important;
+}
 
-  .tp-chip:hover {
-    border-color: rgba(11, 13, 16, 0.45) !important;
-    background: rgba(11, 13, 16, 0.14) !important;
-    color: #0b0d10 !important;
-  }
+html[data-theme="light"] .tp-chip:hover {
+  border-color: rgba(11, 13, 16, 0.45) !important;
+  background: rgba(11, 13, 16, 0.14) !important;
+  color: #0b0d10 !important;
+}
 
-  .tp-chip.tp-active {
-    border-color: rgba(11, 13, 16, 0.65) !important;
-    background: rgba(11, 13, 16, 0.18) !important;
-    color: #0b0d10 !important;
-  }
+html[data-theme="light"] .tp-chip.tp-active {
+  border-color: rgba(11, 13, 16, 0.65) !important;
+  background: rgba(11, 13, 16, 0.18) !important;
+  color: #0b0d10 !important;
+}
 
-  .tp-chip:focus-visible {
-    outline-color: rgba(11, 13, 16, 0.6) !important;
-  }
+html[data-theme="light"] .tp-chip:focus-visible {
+  outline-color: rgba(11, 13, 16, 0.6) !important;
 }
 
 /* One definition for every theme, deliberately. The label always floats over the
@@ -291,20 +298,12 @@
   }
 }
 
-/* Dark mode adjustments */
-@media (prefers-color-scheme: dark) {
-  .tp-screen {
-    box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.9) !important;
-  }
-
-  .tp-stage:hover .tp-screen {
-    box-shadow:
-      inset 0 0 30px rgba(0, 0, 0, 0.9),
-      0 0 40px rgba(0, 224, 122, 0.25) !important;
-  }
-}
-
-/* The light-mode block that stood here is deliberately gone.
+/* A duplicate "dark mode" block keyed on prefers-color-scheme stood here --
+   the same OS-preference-vs-site-toggle bug fixed above for .tp-chip, plus it
+   was redundant: .tp-screen and .tp-stage:hover .tp-screen already carry an
+   unconditional box-shadow near the top of this file (lines ~36-66), and the
+   terminal glass is dark in both of the site's themes anyway, same as .tp-tag.
+   The light-mode counterpart that used to sit alongside it is also gone.
    It re-introduced two bugs. Its .tp-device rules used filter: drop-shadow with
    the green accent, and drop-shadow traces the element's alpha silhouette rather
    than its box, so the glow escaped the hero and bled onto the option chain in
