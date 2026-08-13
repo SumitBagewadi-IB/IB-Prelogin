@@ -144,8 +144,9 @@
 
 .pib-chip[aria-selected="true"] {
   border-color: var(--global-bg-3);
-  background: var(--global-bg-3);
-  color: #fff;
+  background: transparent;
+  color: var(--global-bg-3);
+  font-weight: 600;
 }
 
 .pib-chip:focus-visible {
