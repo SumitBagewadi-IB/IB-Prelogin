@@ -1,0 +1,158 @@
+/* Power Indiabulls EXE hero device.
+ *
+ * A pure-CSS laptop shell, not a bespoke frame image. Trade Pro Terminal's
+ * curved-monitor frame.png needed real alpha-channel measurement because its
+ * geometry was fixed by a pre-made asset; here there is no such asset, so the
+ * aspect ratio is simply SET to match the source crop (1412/757) instead of
+ * measured after the fact. That removes the whole "does the bezel enclose the
+ * screen correctly" class of risk that took several iterations on Trade Pro.
+ *
+ * Colors below reuse the site's own --global-* variables directly rather than
+ * hardcoded hex, which is also a deliberate improvement over the Trade Pro
+ * build: those variables already track the site's real data-theme toggle, so
+ * there is no separate light/dark branch to get backwards. Trade Pro Terminal
+ * hardcoded specific hex values for its accents and paid for it twice today
+ * (a rule keyed on prefers-color-scheme instead of the site's own toggle).
+ */
+
+.pib-stage {
+  position: relative;
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.pib-device {
+  position: relative;
+  width: 100%;
+}
+
+.pib-screen {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1412 / 757;
+  background-color: #0b0f16;
+  border-radius: 10px 10px 2px 2px;
+  overflow: hidden;
+  box-shadow:
+    0 0 0 6px #1c1f26,
+    0 0 0 7px rgba(255, 255, 255, 0.06),
+    0 24px 48px rgba(0, 0, 0, 0.35);
+}
+
+.pib-base {
+  height: 14px;
+  margin: 0 -4%;
+  background: linear-gradient(180deg, #d7d9dc 0%, #b9bcc1 60%, #9fa2a8 100%);
+  border-radius: 0 0 8px 8px;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.25);
+}
+
+.pib-base::after {
+  content: "";
+  display: block;
+  width: 22%;
+  height: 5px;
+  margin: 0 auto;
+  background: #8b8e94;
+  border-radius: 0 0 6px 6px;
+}
+
+.pib-part {
+  position: absolute;
+  background-image: var(--pib-src);
+  background-repeat: no-repeat;
+  opacity: 0;
+  transition: opacity 0.3s cubic-bezier(0.22, 0.61, 0.36, 1), transform 0.3s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.pib-screen.pib-in .pib-part {
+  opacity: 1;
+}
+
+.pib-screen.pib-in .pib-w:nth-of-type(2) { transition-delay: 0.06s; }
+.pib-screen.pib-in .pib-w:nth-of-type(3) { transition-delay: 0.12s; }
+.pib-screen.pib-in .pib-w:nth-of-type(4) { transition-delay: 0.18s; }
+
+.pib-screen.pib-ready .pib-w {
+  cursor: pointer;
+  transition: opacity 0.18s linear, transform 0.18s ease-out;
+  transition-delay: 0s !important;
+}
+
+.pib-screen.pib-ready.pib-dim .pib-w { opacity: 0.28; }
+.pib-screen.pib-ready.pib-dim .pib-w.pib-on { opacity: 1; z-index: 2; }
+
+.pib-tag {
+  position: absolute;
+  top: 8%;
+  transform: translateX(-50%);
+  z-index: 5;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  background: rgba(12, 14, 18, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 12px;
+  line-height: 1.4;
+  white-space: normal;
+  color: #e8eaed;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+.pib-tag.pib-show { opacity: 1; }
+.pib-tag b { color: #e8eaed; font-weight: 700; }
+.pib-tag span { color: rgba(232, 234, 237, 0.66); }
+
+.pib-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.pib-chip {
+  font-size: 13px;
+  padding: 9px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+  border: 1.5px solid var(--global-border-8, rgba(0, 0, 0, 0.16));
+  background: transparent;
+  color: var(--global-text-2, #0b0d10);
+  font-weight: 500;
+  transition: all 0.25s ease;
+  white-space: nowrap;
+}
+
+.pib-chip:hover {
+  border-color: var(--global-bg-3);
+  color: var(--global-bg-3);
+  transform: translateY(-1px);
+}
+
+.pib-chip.pib-active {
+  border-color: var(--global-bg-3);
+  background: var(--global-bg-3);
+  color: #fff;
+}
+
+.pib-chip:focus-visible {
+  outline: 2px solid var(--global-bg-3);
+  outline-offset: 2px;
+}
+
+@media (max-width: 640px) {
+  .pib-chip { padding: 7px 12px; font-size: 12px; }
+  .pib-tag { font-size: 11px; padding: 7px 11px; }
+}
+
+/* "It offers" cards: table-card-bg/gradient-border supply the surface, this
+   just evens out height and centers content now that the zigzag stagger
+   (md:mt-12) is gone. */
+.pib-offer-card {
+  min-height: 160px;
+  justify-content: center;
+}
