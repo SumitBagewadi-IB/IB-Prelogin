@@ -234,3 +234,25 @@
   if (document.readyState === "complete") apply();
   window.addEventListener("load", start);
 })();
+
+/* Load Premium Mega Menu after React hydrates */
+(function () {
+  function loadMegaMenu() {
+    if (document.querySelector("script[src*='mega-menu.js']")) return;
+
+    const script = document.createElement("script");
+    script.src = "/mega-menu.js";
+    script.defer = true;
+    document.body.appendChild(script);
+
+    if (!document.querySelector("link[href*='mega-menu.css']")) {
+      const link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.href = "/mega-menu.css";
+      document.head.appendChild(link);
+    }
+  }
+
+  if (document.readyState === "complete") loadMegaMenu();
+  else window.addEventListener("load", loadMegaMenu);
+})();
