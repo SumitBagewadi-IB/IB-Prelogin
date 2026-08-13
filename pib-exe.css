@@ -158,10 +158,95 @@
   .pib-note { font-size: 12px; }
 }
 
-/* Features carousel — same structure as hero, just in the Key Features section */
+/* Features carousel — horizontal layout with frame on left, tabs on right */
 .pib-features-stage {
   margin-top: 32px;
   margin-bottom: 32px;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.pib-features-container {
+  display: flex;
+  gap: 40px;
+  align-items: flex-start;
+}
+
+.pib-features-left {
+  flex: 1;
+  min-width: 0;
+}
+
+.pib-features-right {
+  flex-shrink: 0;
+  width: 200px;
+  display: flex;
+  flex-direction: column;
+}
+
+.pib-features-tabs {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pib-chip-vertical {
+  width: 100%;
+  text-align: left;
+  padding: 11px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.pib-features-note {
+  margin-top: 16px;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+@media (max-width: 1024px) {
+  .pib-features-container {
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .pib-features-right {
+    width: 100%;
+  }
+
+  .pib-features-tabs {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .pib-chip-vertical {
+    flex: 1;
+    min-width: 140px;
+    text-align: center;
+  }
+}
+
+@media (max-width: 640px) {
+  .pib-features-container {
+    gap: 16px;
+  }
+
+  .pib-features-right {
+    width: 100%;
+  }
+
+  .pib-features-tabs {
+    flex-direction: row;
+    gap: 8px;
+  }
+
+  .pib-chip-vertical {
+    flex: 1;
+    min-width: 100px;
+    padding: 8px 12px;
+    font-size: 12px;
+  }
 }
 
 /* "It offers" cards: table-card-bg/gradient-border supply the surface, this

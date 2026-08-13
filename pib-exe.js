@@ -152,10 +152,9 @@
     if (tabs && tabs.parentNode) tabs.parentNode.removeChild(tabs);
   }
 
-  /* Key Features: same carousel as hero, using the same 6 full screenshots.
-     Removes the scroll-linked card grid and replaces it with a full-screen
-     carousel in laptop frame mockup. Same interaction as hero: tab buttons,
-     auto-advance every 3s, pause on user interaction, keyboard nav. */
+  /* Key Features: horizontal layout with laptop frame on left, tabs on right.
+     Same 6 full screenshots, tablist navigation, auto-advance every 3s,
+     pause on user interaction. Responsive: stacks vertically on mobile. */
   function keyFeaturesCarousel() {
     var h2 = [].slice.call(document.querySelectorAll("h2"))
       .filter(function (h) { return /Key Features/i.test(h.textContent); })[0];
@@ -167,7 +166,11 @@
       if (child !== h2) section.removeChild(child);
     });
 
-    var stage = el("div", "pib-stage pib-features-stage");
+    var stage = el("div", "pib-features-stage");
+    var container = el("div", "pib-features-container");
+
+    /* Left side: laptop frame with carousel */
+    var left = el("div", "pib-features-left");
     var device = el("div", "pib-device");
     var screen = el("div", "pib-screen");
     var rail = el("div", "pib-rail");
@@ -186,12 +189,21 @@
     screen.appendChild(rail);
     device.appendChild(screen);
     device.appendChild(el("div", "pib-base"));
-    stage.appendChild(device);
+    left.appendChild(device);
 
-    var tabs = el("div", "pib-legend pib-features-tabs");
+    var note = el("div", "pib-note pib-features-note");
+    left.appendChild(note);
+
+    /* Right side: vertical tab list */
+    var right = el("div", "pib-features-right");
+    var tabs = el("div", "pib-features-tabs");
     tabs.setAttribute("role", "tablist");
     tabs.setAttribute("aria-label", "Key Features showcase");
-    var note = el("div", "pib-note pib-features-note");
+    right.appendChild(tabs);
+
+    container.appendChild(left);
+    container.appendChild(right);
+    stage.appendChild(container);
 
     var current = 0;
     var autoTimer = null;
@@ -224,7 +236,7 @@
     }
 
     MODES.forEach(function (m, i) {
-      var tab = el("button", "pib-chip");
+      var tab = el("button", "pib-chip pib-chip-vertical");
       tab.type = "button";
       tab.textContent = m.label;
       tab.setAttribute("role", "tab");
@@ -233,7 +245,7 @@
       tab.tabIndex = i === 0 ? 0 : -1;
       tab.addEventListener("click", function () { stopAuto(); select(i); });
       tab.addEventListener("keydown", function (e) {
-        var d = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
+        var d = e.key === "ArrowDown" ? 1 : e.key === "ArrowUp" ? -1 : 0;
         if (!d) return;
         e.preventDefault();
         stopAuto();
@@ -242,8 +254,6 @@
       tabs.appendChild(tab);
     });
 
-    stage.appendChild(tabs);
-    stage.appendChild(note);
     section.appendChild(stage);
     select(0);
 
