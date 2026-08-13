@@ -3,9 +3,17 @@
  * A pure-CSS laptop shell, not a bespoke frame image. Trade Pro Terminal's
  * curved-monitor frame.png needed real alpha-channel measurement because its
  * geometry was fixed by a pre-made asset; here there is no such asset, so the
- * aspect ratio is simply SET to match the source crop (1412/757) instead of
- * measured after the fact. That removes the whole "does the bezel enclose the
- * screen correctly" class of risk that took several iterations on Trade Pro.
+ * aspect ratio is simply SET to match the content instead of measured after
+ * the fact. That removes the whole "does the bezel enclose the screen
+ * correctly" class of risk that took several iterations on Trade Pro.
+ *
+ * The screen holds a carousel of six FULL, uncropped screenshots (same
+ * technique as Trade Pro Terminal's option-chain carousel in s2.css: a rail of
+ * stacked, cross-faded <img>, sized by aspect-ratio, not by cropping). Ratio is
+ * 1414/1081 -- the six source screenshots vary by a few px in each direction,
+ * so object-fit:contain (never fill or cover) guarantees none of them is ever
+ * cropped regardless of its exact dimensions, at the cost of a sliver of
+ * letterboxing on the ones that don't match exactly.
  *
  * Colors below reuse the site's own --global-* variables directly rather than
  * hardcoded hex, which is also a deliberate improvement over the Trade Pro
@@ -30,7 +38,7 @@
 .pib-screen {
   position: relative;
   width: 100%;
-  aspect-ratio: 1412 / 757;
+  aspect-ratio: 1414 / 1081;
   background-color: #0b0f16;
   border-radius: 10px 10px 2px 2px;
   overflow: hidden;
@@ -58,53 +66,54 @@
   border-radius: 0 0 6px 6px;
 }
 
-.pib-part {
+.pib-rail {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.pib-shot {
   position: absolute;
-  background-image: var(--pib-src);
-  background-repeat: no-repeat;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
   opacity: 0;
-  transition: opacity 0.3s cubic-bezier(0.22, 0.61, 0.36, 1), transform 0.3s cubic-bezier(0.22, 0.61, 0.36, 1);
+  transition: opacity 0.25s ease;
 }
 
-.pib-screen.pib-in .pib-part {
-  opacity: 1;
+.pib-shot.pib-on { opacity: 1; }
+
+.pib-screen.pib-in .pib-shot.pib-on {
+  animation: pibFadeIn 0.3s ease;
 }
 
-.pib-screen.pib-in .pib-w:nth-of-type(2) { transition-delay: 0.06s; }
-.pib-screen.pib-in .pib-w:nth-of-type(3) { transition-delay: 0.12s; }
-.pib-screen.pib-in .pib-w:nth-of-type(4) { transition-delay: 0.18s; }
-
-.pib-screen.pib-ready .pib-w {
-  cursor: pointer;
-  transition: opacity 0.18s linear, transform 0.18s ease-out;
-  transition-delay: 0s !important;
+@keyframes pibFadeIn {
+  from { opacity: 0.3; }
+  to { opacity: 1; }
 }
 
-.pib-screen.pib-ready.pib-dim .pib-w { opacity: 0.28; }
-.pib-screen.pib-ready.pib-dim .pib-w.pib-on { opacity: 1; z-index: 2; }
-
-.pib-tag {
-  position: absolute;
-  top: 8%;
-  transform: translateX(-50%);
-  z-index: 5;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.2s ease;
-  background: rgba(12, 14, 18, 0.92);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 8px;
-  padding: 8px 14px;
-  font-size: 12px;
-  line-height: 1.4;
-  white-space: normal;
-  color: #e8eaed;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+.pib-note {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  margin-top: 14px;
+  font-size: 13px;
+  line-height: 1.5;
+  min-height: 2.6em;
+  color: var(--global-text-13, #6b7280);
+  text-align: left;
+  max-width: 560px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.pib-tag.pib-show { opacity: 1; }
-.pib-tag b { color: #e8eaed; font-weight: 700; }
-.pib-tag span { color: rgba(232, 234, 237, 0.66); }
+.pib-note b {
+  color: var(--global-bg-3);
+  font-weight: 600;
+  flex: none;
+}
 
 .pib-legend {
   display: flex;
@@ -133,7 +142,7 @@
   transform: translateY(-1px);
 }
 
-.pib-chip.pib-active {
+.pib-chip[aria-selected="true"] {
   border-color: var(--global-bg-3);
   background: var(--global-bg-3);
   color: #fff;
@@ -146,7 +155,7 @@
 
 @media (max-width: 640px) {
   .pib-chip { padding: 7px 12px; font-size: 12px; }
-  .pib-tag { font-size: 11px; padding: 7px 11px; }
+  .pib-note { font-size: 12px; }
 }
 
 /* "It offers" cards: table-card-bg/gradient-border supply the surface, this

@@ -10,20 +10,25 @@
 (function () {
   "use strict";
 
-  var HERO = "/pib/hero-reports.webp";
-
-  /* Quadrant boundaries as fractions of the source screenshot (1412x757).
-     Measured from the actual crop, not guessed: the four panels split close
-     to a clean 50/50 grid because the original app windows were tiled evenly. */
-  var QUADS = [
-    { key: "portfolio", x: 0.000, y: 0.000, w: 0.500, h: 0.500,
-      label: "Net Portfolio", note: "live holdings, market price and value" },
-    { key: "fo",         x: 0.500, y: 0.000, w: 0.500, h: 0.500,
-      label: "F&O Outstanding Orders", note: "every open leg, at a glance" },
-    { key: "obligations",x: 0.000, y: 0.500, w: 0.500, h: 0.500,
-      label: "Previous Obligations", note: "settlement-wise payables and dates" },
-    { key: "intraday",   x: 0.500, y: 0.500, w: 0.500, h: 0.500,
-      label: "Intra-Settlement Position", note: "buy/sell exposure by scrip" }
+  /* Carousel of six SEPARATE, FULL, uncropped screenshots -- the same technique
+     as Trade Pro Terminal's option-chain carousel (s2.js: a rail of stacked,
+     cross-faded <img>, a tablist of mode buttons, auto-advance every 3s, pause
+     on user interaction). Every file here is the complete original screen, title
+     bar and all -- object-fit:contain in the CSS, never fill or cover, so none
+     of the six is ever cropped regardless of its exact source dimensions. */
+  var MODES = [
+    { key: "welcome", file: "full-welcome.webp", label: "Dashboard",
+      note: "World market summary, news room and market watch on login." },
+    { key: "marketwatch", file: "full-marketwatch.webp", label: "Market Watch",
+      note: "Multiple watchlists tracked side by side, live." },
+    { key: "realtime", file: "full-realtime.webp", label: "Realtime Reports",
+      note: "Net portfolio, F&O orders, obligations and intra-settlement position." },
+    { key: "marketstats", file: "full-marketstats.webp", label: "Market Statistics",
+      note: "Top gainers, losers, only buyers or sellers, volume toppers, most volatile." },
+    { key: "livenews", file: "full-livenews.webp", label: "Live News",
+      note: "A continuously updated News Room for market-moving disclosures." },
+    { key: "alerts", file: "full-alerts.webp", label: "Price Alerts",
+      note: "Set a trigger on any scrip and get notified the instant it's hit." }
   ];
 
   function heroHolder() {
@@ -43,87 +48,95 @@
     var stage = el("div", "pib-stage");
     var device = el("div", "pib-device");
     var screen = el("div", "pib-screen");
-    screen.style.setProperty("--pib-src", "url(" + HERO + ")");
+    var rail = el("div", "pib-rail");
 
-    var tag = el("div", "pib-tag");
-    QUADS.forEach(function (q) {
-      var w = el("div", "pib-part pib-w pib-" + q.key);
-      w.style.left = (q.x * 100) + "%";
-      w.style.top = (q.y * 100) + "%";
-      w.style.width = (q.w * 100) + "%";
-      w.style.height = (q.h * 100) + "%";
-      w.addEventListener("mouseenter", function () { focus(q); });
-      w.addEventListener("mouseleave", blur);
-      screen.appendChild(w);
+    MODES.forEach(function (m, i) {
+      var shot = document.createElement("img");
+      shot.src = "/pib/" + m.file;
+      shot.alt = "Power Indiabulls EXE, " + m.label;
+      shot.decoding = "async";
+      if (i !== 0) shot.loading = "lazy";
+      shot.className = "pib-shot" + (i === 0 ? " pib-on" : "");
+      shot.id = "pib-shot-" + m.key;
+      rail.appendChild(shot);
     });
-    screen.appendChild(tag);
+
+    screen.appendChild(rail);
     device.appendChild(screen);
     device.appendChild(el("div", "pib-base"));
     stage.appendChild(device);
 
-    var legend = el("div", "pib-legend");
-    QUADS.forEach(function (q) {
-      var c = el("button", "pib-chip");
-      c.type = "button";
-      c.textContent = q.label;
-      c.addEventListener("mouseenter", function () { focus(q, c); });
-      c.addEventListener("mouseleave", blur);
-      c.addEventListener("focus", function () { focus(q, c); });
-      c.addEventListener("blur", blur);
-      legend.appendChild(c);
+    var tabs = el("div", "pib-legend");
+    tabs.setAttribute("role", "tablist");
+    tabs.setAttribute("aria-label", "Power Indiabulls EXE screen");
+    var note = el("div", "pib-note");
+
+    var current = 0;
+    var autoTimer = null;
+
+    function select(i, focusTab) {
+      current = i;
+      MODES.forEach(function (m, j) {
+        var on = i === j;
+        rail.children[j].classList.toggle("pib-on", on);
+        var tab = tabs.children[j];
+        tab.setAttribute("aria-selected", on ? "true" : "false");
+        tab.tabIndex = on ? 0 : -1;
+        if (on && focusTab) tab.focus();
+      });
+      note.innerHTML = "";
+      note.appendChild(el("b", null, MODES[i].label));
+      note.appendChild(document.createTextNode(" — " + MODES[i].note));
+    }
+
+    function startAuto() {
+      if (autoTimer) clearInterval(autoTimer);
+      autoTimer = setInterval(function () {
+        select((current + 1) % MODES.length);
+      }, 3000);
+    }
+
+    function stopAuto() {
+      if (autoTimer) clearInterval(autoTimer);
+      autoTimer = null;
+    }
+
+    MODES.forEach(function (m, i) {
+      var tab = el("button", "pib-chip");
+      tab.type = "button";
+      tab.textContent = m.label;
+      tab.setAttribute("role", "tab");
+      tab.setAttribute("aria-selected", i === 0 ? "true" : "false");
+      tab.setAttribute("aria-controls", "pib-shot-" + m.key);
+      tab.tabIndex = i === 0 ? 0 : -1;
+      tab.addEventListener("click", function () { stopAuto(); select(i); });
+      tab.addEventListener("keydown", function (e) {
+        var d = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
+        if (!d) return;
+        e.preventDefault();
+        stopAuto();
+        select((i + d + MODES.length) % MODES.length, true);
+      });
+      tabs.appendChild(tab);
     });
-    stage.appendChild(legend);
+
+    stage.appendChild(tabs);
+    stage.appendChild(note);
     holder.appendChild(stage);
-
-    function focus(q, chip) {
-      var w = screen.querySelector(".pib-" + q.key);
-      if (!w) return;
-      screen.classList.add("pib-dim");
-      screen.querySelectorAll(".pib-w").forEach(function (n) { n.classList.remove("pib-on"); });
-      w.classList.add("pib-on");
-      legend.querySelectorAll(".pib-chip").forEach(function (n) { n.classList.remove("pib-active"); });
-      if (chip) chip.classList.add("pib-active");
-
-      tag.innerHTML = "<b>" + q.label + "</b> <span>— " + q.note + "</span>";
-      tag.style.left = "0px";
-      var sw = screen.clientWidth;
-      var half = tag.offsetWidth / 2;
-      var want = (q.x + q.w / 2) * sw;
-      tag.style.left = Math.round(
-        Math.min(Math.max(want, half + 10), sw - half - 10)) + "px";
-      tag.classList.add("pib-show");
-    }
-
-    function blur() {
-      screen.classList.remove("pib-dim");
-      screen.querySelectorAll(".pib-w").forEach(function (n) { n.classList.remove("pib-on"); });
-      legend.querySelectorAll(".pib-chip").forEach(function (n) { n.classList.remove("pib-active"); });
-      tag.classList.remove("pib-show");
-    }
-
-    function size() {
-      var w = screen.clientWidth;
-      if (!w) return;
-      var h = w * 757 / 1412;
-      screen.querySelectorAll(".pib-part").forEach(function (n) {
-        n.style.backgroundSize = w + "px " + h + "px";
-      });
-      QUADS.forEach(function (q) {
-        var n = screen.querySelector(".pib-" + q.key);
-        if (n) n.style.backgroundPosition = (-q.x * w) + "px " + (-q.y * h) + "px";
-      });
-    }
-    size();
-    window.addEventListener("resize", size);
-    if (typeof ResizeObserver === "function") {
-      new ResizeObserver(size).observe(screen);
-    }
+    select(0);
 
     holder.dataset.improved = "hero";
     requestAnimationFrame(function () {
       screen.classList.add("pib-in");
-      setTimeout(function () { screen.classList.add("pib-ready"); }, 900);
     });
+    setTimeout(startAuto, 1000);
+  }
+
+  function el(tagOrText, cls, text) {
+    var n = document.createElement(tagOrText);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;
+    return n;
   }
 
   /* Shared product-switcher tab bar (Mobile App / TradePro Terminal / PIB EXE) --
@@ -243,12 +256,6 @@
       it.classList.add("table-card-bg", "gradient-border", "pib-offer-card");
     });
     h2.dataset.improved = "1";
-  }
-
-  function el(tag, cls) {
-    var n = document.createElement(tag);
-    n.className = cls;
-    return n;
   }
 
   var STEPS = [heroVisual, removeProductTabs, watchFeatureImage, addAlertsCard, fixItOffers];
