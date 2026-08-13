@@ -158,6 +158,12 @@
   .pib-note { font-size: 12px; }
 }
 
+/* Features carousel — same structure as hero, just in the Key Features section */
+.pib-features-stage {
+  margin-top: 32px;
+  margin-bottom: 32px;
+}
+
 /* "It offers" cards: table-card-bg/gradient-border supply the surface, this
    just evens out height and centers content now that the zigzag stagger
    (md:mt-12) is gone. */

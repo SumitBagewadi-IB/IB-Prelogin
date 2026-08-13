@@ -152,87 +152,106 @@
     if (tabs && tabs.parentNode) tabs.parentNode.removeChild(tabs);
   }
 
-  /* --- Key Features: correct the swapped screenshot, don't rebuild the section --
-     This section is a real, working, accessible React component: a scroll-linked
-     card list (role="button"/aria-pressed) that swaps ONE shared <img> src/alt as
-     the active card changes. That already works (keyboard, scroll, click) --
-     rebuilding it would throw away real functionality for no reason. It just
-     currently swaps in a generic stock image per card. Fix only the mapping: a
-     MutationObserver on that single <img> corrects its src to a real screenshot
-     the instant React sets a matching alt, and leaves anything without a real
-     replacement (Streamlined Interface, Online IPO Tracker, Auto-Update
-     Notification) exactly as React set it. */
-  var REAL_SHOTS = {
-    "Live Market Watch": "/pib/feature-marketwatch.webp",
-    "Global Market Overview": "/pib/feature-worldmarket.webp",
-    "Insightful Market Data": "/pib/feature-marketstats.webp",
-    "Live News Feed": "/pib/feature-livenews.webp",
-    "Custom Price Alerts": "/pib/feature-alerts.webp"
-  };
-
-  function keyFeaturesSection() {
+  /* Key Features: same carousel as hero, using the same 6 full screenshots.
+     Removes the scroll-linked card grid and replaces it with a full-screen
+     carousel in laptop frame mockup. Same interaction as hero: tab buttons,
+     auto-advance every 3s, pause on user interaction, keyboard nav. */
+  function keyFeaturesCarousel() {
     var h2 = [].slice.call(document.querySelectorAll("h2"))
       .filter(function (h) { return /Key Features/i.test(h.textContent); })[0];
-    return h2 ? h2.closest("section") : null;
-  }
+    var section = h2 ? h2.closest("section") : null;
+    if (!section || section.dataset.carouselImproved) return;
 
-  function fixFeatureImage(img) {
-    var real = REAL_SHOTS[img.alt];
-    if (real && img.dataset.pibSrc !== real) {
-      img.dataset.pibSrc = real;
-      img.src = real;
-    }
-  }
-
-  function watchFeatureImage() {
-    var section = keyFeaturesSection();
-    if (!section || section.dataset.imgWatched) return;
-    var img = section.querySelector("img");
-    if (!img) return;
-    fixFeatureImage(img);
-    new MutationObserver(function () { fixFeatureImage(img); })
-      .observe(img, { attributes: true, attributeFilter: ["alt", "src"] });
-    section.dataset.imgWatched = "1";
-  }
-
-  /* One extra card, click-only. It does not hook into the section's own
-     scroll-linked IntersectionObserver (that's internal React state this script
-     has no access to) -- it only responds to a direct click, same as the seven
-     real cards do, just without the auto-highlight-on-scroll extra. Cloning a
-     real card's node keeps every Tailwind class exact; only text and behaviour
-     change. */
-  function addAlertsCard() {
-    var section = keyFeaturesSection();
-    if (!section || section.dataset.alertsCard) return;
-    var cards = section.querySelectorAll('[role="button"][aria-label^="Show details"]');
-    if (!cards.length) return;
-    var list = cards[0].parentElement;
-    var img = section.querySelector("img");
-    if (!img) return;
-
-    var card = cards[cards.length - 1].cloneNode(true);
-    card.setAttribute("aria-pressed", "false");
-    card.setAttribute("aria-label", "Show details for Custom Price Alerts");
-    card.classList.remove("card-selected");
-    var h3 = card.querySelector("h3");
-    if (h3) h3.textContent = "Custom Price Alerts";
-    var p = card.querySelector("p");
-    if (p) p.textContent = "Set a price trigger on any scrip and get notified the instant your target is hit.";
-
-    card.addEventListener("click", function () {
-      section.querySelectorAll('[role="button"][aria-label^="Show details"]').forEach(function (c) {
-        c.classList.remove("card-selected");
-        c.setAttribute("aria-pressed", "false");
-      });
-      card.classList.add("card-selected");
-      card.setAttribute("aria-pressed", "true");
-      img.dataset.pibSrc = REAL_SHOTS["Custom Price Alerts"];
-      img.src = REAL_SHOTS["Custom Price Alerts"];
-      img.alt = "Custom Price Alerts";
+    var children = [].slice.call(section.children);
+    children.forEach(function (child) {
+      if (child !== h2) section.removeChild(child);
     });
 
-    list.appendChild(card);
-    section.dataset.alertsCard = "1";
+    var stage = el("div", "pib-stage pib-features-stage");
+    var device = el("div", "pib-device");
+    var screen = el("div", "pib-screen");
+    var rail = el("div", "pib-rail");
+
+    MODES.forEach(function (m, i) {
+      var shot = document.createElement("img");
+      shot.src = "/pib/" + m.file;
+      shot.alt = "Power Indiabulls EXE, " + m.label;
+      shot.decoding = "async";
+      if (i !== 0) shot.loading = "lazy";
+      shot.className = "pib-shot" + (i === 0 ? " pib-on" : "");
+      shot.id = "pib-features-shot-" + m.key;
+      rail.appendChild(shot);
+    });
+
+    screen.appendChild(rail);
+    device.appendChild(screen);
+    device.appendChild(el("div", "pib-base"));
+    stage.appendChild(device);
+
+    var tabs = el("div", "pib-legend pib-features-tabs");
+    tabs.setAttribute("role", "tablist");
+    tabs.setAttribute("aria-label", "Key Features showcase");
+    var note = el("div", "pib-note pib-features-note");
+
+    var current = 0;
+    var autoTimer = null;
+
+    function select(i, focusTab) {
+      current = i;
+      MODES.forEach(function (m, j) {
+        var on = i === j;
+        rail.children[j].classList.toggle("pib-on", on);
+        var tab = tabs.children[j];
+        tab.setAttribute("aria-selected", on ? "true" : "false");
+        tab.tabIndex = on ? 0 : -1;
+        if (on && focusTab) tab.focus();
+      });
+      note.innerHTML = "";
+      note.appendChild(el("b", null, MODES[i].label));
+      note.appendChild(document.createTextNode(" — " + MODES[i].note));
+    }
+
+    function startAuto() {
+      if (autoTimer) clearInterval(autoTimer);
+      autoTimer = setInterval(function () {
+        select((current + 1) % MODES.length);
+      }, 3000);
+    }
+
+    function stopAuto() {
+      if (autoTimer) clearInterval(autoTimer);
+      autoTimer = null;
+    }
+
+    MODES.forEach(function (m, i) {
+      var tab = el("button", "pib-chip");
+      tab.type = "button";
+      tab.textContent = m.label;
+      tab.setAttribute("role", "tab");
+      tab.setAttribute("aria-selected", i === 0 ? "true" : "false");
+      tab.setAttribute("aria-controls", "pib-features-shot-" + m.key);
+      tab.tabIndex = i === 0 ? 0 : -1;
+      tab.addEventListener("click", function () { stopAuto(); select(i); });
+      tab.addEventListener("keydown", function (e) {
+        var d = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
+        if (!d) return;
+        e.preventDefault();
+        stopAuto();
+        select((i + d + MODES.length) % MODES.length, true);
+      });
+      tabs.appendChild(tab);
+    });
+
+    stage.appendChild(tabs);
+    stage.appendChild(note);
+    section.appendChild(stage);
+    select(0);
+
+    section.dataset.carouselImproved = "features";
+    requestAnimationFrame(function () {
+      screen.classList.add("pib-in");
+    });
+    setTimeout(startAuto, 1000);
   }
 
   /* "It offers:" is already a clean 5-column grid (grid-cols-1 md:grid-cols-3
@@ -258,7 +277,7 @@
     h2.dataset.improved = "1";
   }
 
-  var STEPS = [heroVisual, removeProductTabs, watchFeatureImage, addAlertsCard, fixItOffers];
+  var STEPS = [heroVisual, removeProductTabs, keyFeaturesCarousel, fixItOffers];
 
   function apply() {
     STEPS.forEach(function (fn) {
