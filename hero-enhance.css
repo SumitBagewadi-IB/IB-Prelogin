@@ -149,6 +149,55 @@
   outline-offset: 2px !important;
 }
 
+/* ---- Light Theme: Dark buttons for visibility ---- */
+@media (prefers-color-scheme: light), [class*="light"] {
+  .tp-chip {
+    border-color: rgba(11, 13, 16, 0.25) !important;
+    background: rgba(11, 13, 16, 0.08) !important;
+    color: rgba(11, 13, 16, 0.85) !important;
+  }
+
+  .tp-chip:hover {
+    border-color: rgba(11, 13, 16, 0.45) !important;
+    background: rgba(11, 13, 16, 0.14) !important;
+    color: #0b0d10 !important;
+  }
+
+  .tp-chip.tp-active {
+    border-color: rgba(11, 13, 16, 0.65) !important;
+    background: rgba(11, 13, 16, 0.18) !important;
+    color: #0b0d10 !important;
+  }
+
+  .tp-chip:focus-visible {
+    outline-color: rgba(11, 13, 16, 0.6) !important;
+  }
+}
+
+/* Dark theme override (explicit) */
+:root[data-theme="dark"] .tp-chip,
+@media (prefers-color-scheme: dark) {
+  .tp-chip {
+    border-color: rgba(255, 255, 255, 0.18) !important;
+    background: rgba(255, 255, 255, 0.04) !important;
+    color: #fff !important;
+  }
+
+  .tp-chip:hover {
+    border-color: rgba(255, 255, 255, 0.42) !important;
+    background: rgba(255, 255, 255, 0.10) !important;
+  }
+
+  .tp-chip.tp-active {
+    border-color: rgba(255, 255, 255, 0.60) !important;
+    background: rgba(255, 255, 255, 0.14) !important;
+  }
+
+  .tp-chip:focus-visible {
+    outline-color: rgba(255, 255, 255, 0.85) !important;
+  }
+}
+
 /* One definition for every theme, deliberately. The label always floats over the
    terminal screenshot, which is dark in all cases, so a dark panel with light grey
    text is legible in every combination and needs no theme branch. That also closes
