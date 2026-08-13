@@ -149,8 +149,10 @@
   outline-offset: 2px !important;
 }
 
-/* ---- Light Theme: Dark buttons for visibility ---- */
-@media (prefers-color-scheme: light), [class*="light"] {
+/* ---- Light Theme Only: Dark buttons for visibility ---- */
+/* By default (no media query), use dark theme styling (white buttons).
+   Only override for explicit light theme. */
+@media (prefers-color-scheme: light) {
   .tp-chip {
     border-color: rgba(11, 13, 16, 0.25) !important;
     background: rgba(11, 13, 16, 0.08) !important;
@@ -171,30 +173,6 @@
 
   .tp-chip:focus-visible {
     outline-color: rgba(11, 13, 16, 0.6) !important;
-  }
-}
-
-/* Dark theme override (explicit) */
-:root[data-theme="dark"] .tp-chip,
-@media (prefers-color-scheme: dark) {
-  .tp-chip {
-    border-color: rgba(255, 255, 255, 0.18) !important;
-    background: rgba(255, 255, 255, 0.04) !important;
-    color: #fff !important;
-  }
-
-  .tp-chip:hover {
-    border-color: rgba(255, 255, 255, 0.42) !important;
-    background: rgba(255, 255, 255, 0.10) !important;
-  }
-
-  .tp-chip.tp-active {
-    border-color: rgba(255, 255, 255, 0.60) !important;
-    background: rgba(255, 255, 255, 0.14) !important;
-  }
-
-  .tp-chip:focus-visible {
-    outline-color: rgba(255, 255, 255, 0.85) !important;
   }
 }
 
