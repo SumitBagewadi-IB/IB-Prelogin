@@ -136,4 +136,22 @@
   injectStyles();
   if (document.readyState === "complete") clean();
   window.addEventListener("load", start);
+
+  /* Load Mega Menu Enhancement */
+  function loadMegaMenu() {
+    if (document.querySelector('link[href*="mega-menu.css"]')) return;
+    var link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = '/mega-menu.css';
+    document.head.appendChild(link);
+
+    if (document.querySelector('script[src*="mega-menu.js"]')) return;
+    var script = document.createElement('script');
+    script.src = '/mega-menu.js';
+    script.async = true;
+    document.body.appendChild(script);
+  }
+
+  if (document.readyState === "complete") loadMegaMenu();
+  window.addEventListener("load", loadMegaMenu);
 })();
