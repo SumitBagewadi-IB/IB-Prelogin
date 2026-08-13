@@ -231,28 +231,34 @@
     }, 150);
   }
 
-  if (document.readyState === "complete") apply();
-  window.addEventListener("load", start);
-})();
-
-/* Load Premium Mega Menu after React hydrates */
-(function () {
+  /* Load Premium Mega Menu - GUARANTEED via polling */
   function loadMegaMenu() {
-    if (document.querySelector("script[src*='mega-menu.js']")) return;
-
-    const script = document.createElement("script");
-    script.src = "/mega-menu.js";
-    script.defer = true;
-    document.body.appendChild(script);
-
-    if (!document.querySelector("link[href*='mega-menu.css']")) {
-      const link = document.createElement("link");
+    /* Inject CSS */
+    if (!document.querySelector("link[href*='mega-menu.css']") && document.head) {
+      var link = document.createElement("link");
       link.rel = "stylesheet";
       link.href = "/mega-menu.css";
       document.head.appendChild(link);
     }
+    /* Inject JS */
+    if (!document.querySelector("script[src*='mega-menu.js']") && document.body) {
+      var script = document.createElement("script");
+      script.src = "/mega-menu.js";
+      script.async = true;
+      document.body.appendChild(script);
+    }
   }
 
-  if (document.readyState === "complete") loadMegaMenu();
-  else window.addEventListener("load", loadMegaMenu);
+  if (document.readyState === "complete") apply();
+  window.addEventListener("load", function() {
+    start();
+    setTimeout(loadMegaMenu, 1000);
+  });
+
+  /* Fallback polling */
+  var menuLoadTries = 0;
+  var menuLoadIv = setInterval(function () {
+    loadMegaMenu();
+    if (++menuLoadTries > 10) clearInterval(menuLoadIv);
+  }, 500);
 })();
