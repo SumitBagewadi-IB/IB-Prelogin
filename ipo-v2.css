@@ -1,0 +1,362 @@
+/* IPO page: additions from "IPO Page Wireframe v1" (17 Aug 2026).
+ *
+ * Everything here is ADDITIVE: the sections the QA site already ships are left
+ * untouched. This sheet styles only the new blocks:
+ *
+ *   §4  step body copy                                     .ipx-step-copy
+ *   §8  category reservation table + footnote              .ipx-cat
+ *   §9  closing line -> #ipo-risks                         .ipx-closing
+ *   §3  per-tab empty states                               .ipx-empty
+ *   §11 glossary                                           .ipx-gloss
+ *   §12 FAQ accordion (site.js drives the toggling)        .ipx-faq
+ *
+ * Colours come from the site's own --global-* tokens so the blocks follow the
+ * theme. The mirror serves no data-theme attribute, so :root == dark; the
+ * [data-theme=light] block below keys off the site's attribute, never off
+ * prefers-color-scheme.
+ */
+
+:root {
+  --ipx-surface: rgba(255, 255, 255, 0.045);
+  --ipx-surface-2: rgba(255, 255, 255, 0.07);
+  --ipx-line: rgba(255, 255, 255, 0.12);
+  --ipx-line-strong: rgba(255, 255, 255, 0.2);
+  --ipx-muted: #a9b0b8;
+  --ipx-pos: #17d061;
+  --ipx-pos-soft: #11a971;
+  --ipx-neg: #e5484d;
+}
+
+[data-theme="light"] {
+  --ipx-surface: #f7f8f9;
+  --ipx-surface-2: #eef0f2;
+  --ipx-line: #e3e6e9;
+  --ipx-line-strong: #cfd4d9;
+  --ipx-muted: #595959;
+  --ipx-pos: #0d883f;
+  --ipx-pos-soft: #0d883f;
+  --ipx-neg: #c62828;
+}
+
+/* Anchors clear the sticky header when the page is deep-linked. */
+#hero,
+#ipo-list,
+#how-to-apply,
+#what-are-ipos,
+#why-go-public,
+#ipo-categories,
+#who-can-invest,
+#why-invest,
+#ipo-risks,
+#ipo-glossary,
+#ipo-faqs,
+#expert-guidance,
+#blogs {
+  scroll-margin-top: 96px;
+}
+
+html { scroll-behavior: smooth; }
+
+/* Used where two headings share one wrapper div and the id can't go on it. */
+.ipx-anchor {
+  display: block;
+  height: 0;
+  scroll-margin-top: 96px;
+}
+
+/* ------------------------------------------------ shared section furniture */
+
+.ipx-sec {
+  position: relative;
+  z-index: 10;
+  padding: 40px 16px;
+  background: var(--global-bg-2, #000);
+  color: var(--global-text-2, #fff);
+}
+
+.ipx-wrap {
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.ipx-h2 {
+  margin: 0 0 8px;
+  text-align: center;
+  font-size: 24px;
+  line-height: 1.2;
+  color: var(--global-text-2, #fff);
+}
+
+.ipx-sub {
+  margin: 0 auto 28px;
+  max-width: 62ch;
+  text-align: center;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--ipx-muted);
+}
+
+@media (min-width: 768px) {
+  .ipx-sec { padding: 56px 24px; }
+  .ipx-h2 { font-size: 40px; }
+  .ipx-sub { font-size: 17px; }
+}
+
+@media (min-width: 1024px) {
+  .ipx-h2 { font-size: 48px; }
+}
+
+/* -------------------------------------------- §3 per-tab empty states */
+
+.ipx-empty {
+  padding: 44px 24px;
+  text-align: center;
+}
+
+.ipx-empty h3 {
+  margin: 0 0 8px;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--global-text-2, #fff);
+}
+
+.ipx-empty p {
+  margin: 0 auto;
+  max-width: 56ch;
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--ipx-muted);
+}
+
+/* ------------------------------------------------------ §4 step body copy */
+
+.ipx-step-copy {
+  margin: 6px 0 0;
+  max-width: 62ch;
+  font-size: 13px;
+  line-height: 1.62;
+  color: var(--ipx-muted);
+}
+
+.ipx-step-copy strong {
+  color: var(--global-text-2, #fff);
+  font-weight: 600;
+}
+
+/* The section paints a 100px bottom fade over its own content. The added copy
+   makes the timeline taller, so give the final step room to clear the fade. */
+[aria-label="Track Allotment Status in your dashboard"] .ipx-step-copy {
+  margin-bottom: 96px;
+}
+
+.ipx-step-copy a {
+  color: var(--ipx-pos);
+  text-decoration: none;
+  border-bottom: 1px solid currentColor;
+}
+
+/* --------------------------------------------- §8 category reservation table */
+
+.ipx-cat-wrap {
+  width: 100%;
+  max-width: 1180px;
+  margin: 32px auto 0;
+}
+
+.ipx-cat {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid var(--ipx-line);
+  border-radius: 14px;
+  overflow: hidden;
+  font-size: 13.5px;
+}
+
+.ipx-cat th,
+.ipx-cat td {
+  padding: 14px 16px;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--ipx-line);
+  line-height: 1.55;
+}
+
+.ipx-cat thead th {
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ipx-muted);
+  font-weight: 600;
+  background: var(--ipx-surface);
+  white-space: nowrap;
+}
+
+.ipx-cat tbody th {
+  font-weight: 700;
+  color: var(--global-text-2, #fff);
+  width: 22%;
+}
+
+.ipx-cat td { color: var(--ipx-muted); }
+
+.ipx-cat td.is-num { font-variant-numeric: tabular-nums; }
+
+.ipx-cat tbody tr:last-child th,
+.ipx-cat tbody tr:last-child td { border-bottom: 0; }
+
+.ipx-foot {
+  margin: 16px 0 0;
+  max-width: 90ch;
+  font-size: 12.5px;
+  line-height: 1.65;
+  color: var(--ipx-muted);
+}
+
+/* Mobile: the four-column table becomes one card per category. */
+@media (max-width: 767px) {
+  .ipx-cat,
+  .ipx-cat tbody,
+  .ipx-cat tr,
+  .ipx-cat th,
+  .ipx-cat td { display: block; width: auto; }
+
+  .ipx-cat { border: 0; }
+  .ipx-cat thead { display: none; }
+
+  .ipx-cat tbody tr {
+    margin-bottom: 12px;
+    border: 1px solid var(--ipx-line);
+    border-radius: 14px;
+    background: var(--ipx-surface);
+    overflow: hidden;
+  }
+
+  .ipx-cat tbody th {
+    width: auto;
+    padding: 14px 16px 8px;
+    border-bottom: 1px solid var(--ipx-line);
+    font-size: 14.5px;
+  }
+
+  .ipx-cat tbody td {
+    padding: 8px 16px;
+    border-bottom: 0;
+  }
+
+  .ipx-cat tbody td::before {
+    content: attr(data-label);
+    display: block;
+    margin-bottom: 2px;
+    font-size: 10.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ipx-muted);
+    opacity: 0.75;
+  }
+
+  .ipx-cat tbody td:last-child { padding-bottom: 16px; }
+}
+
+/* ------------------------------------------------------- §9 closing line */
+
+.ipx-closing {
+  margin: 28px auto 0;
+  max-width: 68ch;
+  text-align: center;
+  font-size: 14.5px;
+  line-height: 1.65;
+  color: var(--ipx-muted);
+}
+
+.ipx-closing a {
+  color: var(--global-text-2, #fff);
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 1px solid var(--ipx-pos);
+}
+
+/* ------------------------------------------------------------ §11 glossary */
+
+.ipx-gloss {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+}
+
+.ipx-term {
+  padding: 16px 18px;
+  border: 1px solid var(--ipx-line);
+  border-radius: 14px;
+  background: var(--ipx-surface);
+}
+
+.ipx-term dt {
+  margin: 0 0 6px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--global-text-2, #fff);
+}
+
+.ipx-term dd {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.62;
+  color: var(--ipx-muted);
+}
+
+@media (min-width: 768px) {
+  .ipx-gloss { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+}
+
+/* ---------------------------------------------------------------- §12 FAQs */
+
+.ipx-faq { max-width: 780px; margin: 0 auto; }
+
+.ipx-faq-item {
+  border: 1px solid var(--ipx-line);
+  border-radius: 14px;
+  background: var(--ipx-surface);
+  margin-bottom: 12px;
+  overflow: hidden;
+}
+
+.ipx-faq-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  padding: 18px 20px;
+  border: 0;
+  background: transparent;
+  color: var(--global-text-2, #fff);
+  font: inherit;
+  font-size: 15.5px;
+  font-weight: 600;
+  line-height: 1.45;
+  text-align: left;
+  cursor: pointer;
+}
+
+.ipx-faq-btn svg {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  transition: transform 0.25s ease;
+}
+
+.ipx-faq-btn[aria-expanded="true"] svg { transform: rotate(180deg); }
+
+.ipx-faq-panel { padding: 0 20px 18px; }
+
+.ipx-faq-panel p {
+  margin: 0;
+  max-width: 68ch;
+  font-size: 14px;
+  line-height: 1.68;
+  color: var(--ipx-muted);
+}
+
+/* --------------------------------------------------------------- utilities */
+
+.ipx-hidden { display: none !important; }
