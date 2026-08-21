@@ -11,6 +11,9 @@
     );
     for (var i = nodes.snapshotLength - 1; i >= 0; i--) {
       var node = nodes.snapshotItem(i);
+      // The wireframe's pricing panel (s6.js) states this figure deliberately,
+      // with a sign-off chip beside it. Leave anything inside that subtree alone.
+      if (node.parentElement && node.parentElement.closest("[data-s6]")) continue;
       node.textContent = node.textContent.replace(/₹11 flat per executed order\s*/g, "");
       if (!node.textContent.trim()) node.parentNode.removeChild(node);
     }

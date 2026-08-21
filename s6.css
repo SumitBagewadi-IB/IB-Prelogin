@@ -1,0 +1,718 @@
+/* ============ Section 6: the sections the wireframe adds ====================
+ *
+ * Trade Pro page, per the Trade Pro Web product page wireframe and the
+ * accompanying mockup. Everything already on the page stays; this file styles
+ * only what the wireframe adds:
+ *
+ *   §0  in-page anchor nav                    .s6-nav
+ *   §2  proof strip (dark band, 4 cells)      .s6-proof
+ *   §3  persona routing (3 cards)             .s6-personas
+ *   §5  platform comparison table             .s6-compare
+ *   §6  pricing split panel                   .s6-price
+ *   §7  three onboarding steps + requirements .s6-steps
+ *   §8  trust metrics (4 stats)               .s6-trust
+ *   §10 closing CTA + risk disclosure         .s6-final
+ *
+ * Tokens follow s2.css / s3.css / s5.css so the new blocks read as one page
+ * with the sections already shipped: accent #00e07a, body #b9c0cc, hairlines at
+ * 14% white. Own file so it survives a rebuild of the route.
+ */
+
+.s6 {
+  --s6-accent: #00e07a;
+  --s6-line: rgba(255, 255, 255, 0.14);
+  --s6-line-soft: rgba(255, 255, 255, 0.08);
+  --s6-surface: rgba(255, 255, 255, 0.04);
+  --s6-surface-2: rgba(255, 255, 255, 0.07);
+  --s6-body: #b9c0cc;
+  --s6-mute: #8b93a1;
+  --s6-band: #0b0b0f;
+}
+
+/* ------------------------------------------------------------ section shell */
+
+section.s6 {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  padding: 56px 16px;
+  background: var(--global-bg-2, #000);
+  color: var(--global-text-2, #fff);
+  scroll-margin-top: 110px;
+}
+
+@media (max-width: 768px) {
+  section.s6 { padding: 32px 16px; }
+}
+
+/* The nav links also point at sections that shipped earlier; give them the same
+   clearance under the sticky header. */
+#s3,
+#s5,
+#tp-chain,
+#tp-features {
+  scroll-margin-top: 110px;
+}
+
+.s6-wrap { max-width: 1160px; margin: 0 auto; }
+.s6-center { text-align: center; }
+
+.s6-eyebrow {
+  margin: 0 0 10px;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--s6-accent);
+}
+
+.s6 h2 { margin: 0; color: var(--global-text-2, #fff); }
+
+.s6-lead {
+  margin: 14px auto 0;
+  max-width: 62ch;
+  font-size: 15.5px;
+  line-height: 1.6;
+  color: var(--global-text-13, #d1d5db);
+}
+
+.s6-note {
+  margin: 16px 0 0;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--s6-mute);
+}
+
+.s6-confirm {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 2px 7px;
+  border: 1px solid rgba(224, 178, 62, 0.45);
+  border-radius: 4px;
+  background: rgba(224, 178, 62, 0.12);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #e0b23e;
+  vertical-align: 2px;
+  white-space: nowrap;
+}
+
+/* CTAs: same pill language as the hero's Launch button. */
+.s6-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 13px 24px;
+  border: 1.5px solid transparent;
+  border-radius: 999px;
+  font-size: 14.5px;
+  font-weight: 650;
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+}
+
+.s6-btn-p { background: var(--s6-accent); color: #06120c; }
+.s6-btn-p:hover { background: #22f091; }
+.s6-btn-s {
+  background: transparent;
+  color: var(--global-text-2, #fff);
+  border-color: rgba(255, 255, 255, 0.28);
+}
+.s6-btn-s:hover { border-color: #fff; }
+
+.s6-ctas { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 26px; }
+.s6-center .s6-ctas { justify-content: center; }
+
+/* ------------------------------------------------------- §0 in-page nav */
+
+.s6-nav {
+  padding: 0 16px;
+  background: var(--global-bg-2, #000);
+}
+
+.s6-nav-inner {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--s6-line-soft);
+}
+
+.s6-nav-links {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.s6-nav-links::-webkit-scrollbar { display: none; }
+
+.s6-nav-links a {
+  flex: 0 0 auto;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  color: var(--s6-body);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.18s ease, color 0.18s ease;
+}
+
+.s6-nav-links a:hover {
+  background: var(--s6-surface-2);
+  color: #fff;
+}
+
+.s6-nav .s6-btn {
+  margin-left: auto;
+  padding: 9px 18px;
+  font-size: 13px;
+}
+
+@media (max-width: 900px) {
+  .s6-nav .s6-btn { display: none; }
+}
+
+/* ------------------------------------------------------- §2 proof strip */
+
+section.s6-proof {
+  padding: 0;
+  background: var(--s6-band);
+}
+
+.s6-proof-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  background: var(--s6-line);
+}
+
+.s6-proof-cell {
+  padding: 30px 26px;
+  background: var(--s6-band);
+}
+
+.s6-proof-n {
+  font-size: 26px;
+  font-weight: 750;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  color: #fff;
+}
+
+.s6-proof-n em { font-style: normal; color: var(--s6-accent); }
+
+.s6-proof-l {
+  margin: 6px 0 0;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: #9db3a7;
+}
+
+@media (max-width: 860px) {
+  .s6-proof-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .s6-proof-cell { padding: 22px 18px; }
+  .s6-proof-n { font-size: 21px; }
+}
+
+/* --------------------------------------------------------- §3 personas */
+
+.s6-cards3 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 34px;
+  text-align: left;
+}
+
+.s6-card {
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  border: 1px solid var(--s6-line);
+  border-radius: 14px;
+  background: var(--s6-surface);
+  transition: border-color 0.18s ease, transform 0.18s ease;
+}
+
+.s6-card:hover {
+  border-color: rgba(0, 224, 122, 0.45);
+  transform: translateY(-2px);
+}
+
+.s6-ico {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  margin-bottom: 15px;
+  border-radius: 10px;
+  background: rgba(0, 224, 122, 0.12);
+  color: var(--s6-accent);
+}
+
+.s6-ico svg { width: 20px; height: 20px; }
+
+.s6-card h3 {
+  margin: 0;
+  font-size: 16.5px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.s6-card p {
+  margin: 8px 0 0;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--s6-body);
+}
+
+.s6-card a {
+  margin-top: 14px;
+  font-size: 13px;
+  font-weight: 650;
+  color: var(--s6-accent);
+  text-decoration: none;
+}
+
+.s6-card a:hover { text-decoration: underline; }
+
+@media (max-width: 880px) {
+  .s6-cards3 { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* ------------------------------------------------ §5 comparison table */
+
+.s6-tbl-wrap {
+  margin-top: 34px;
+  overflow-x: auto;
+  border: 1px solid var(--s6-line);
+  border-radius: 14px;
+}
+
+table.s6-cmp {
+  width: 100%;
+  min-width: 720px;
+  border-collapse: collapse;
+  font-size: 13.5px;
+  text-align: left;
+}
+
+table.s6-cmp th,
+table.s6-cmp td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--s6-line-soft);
+  vertical-align: top;
+  line-height: 1.5;
+}
+
+table.s6-cmp thead th {
+  background: rgba(255, 255, 255, 0.05);
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  white-space: nowrap;
+}
+
+/* This is the Trade Pro column: it is this product's page, so it leads. */
+table.s6-cmp thead th:nth-child(2) {
+  background: rgba(0, 224, 122, 0.14);
+  color: var(--s6-accent);
+}
+
+table.s6-cmp tbody td:nth-child(2) {
+  background: rgba(0, 224, 122, 0.05);
+  color: #fff;
+  font-weight: 600;
+}
+
+table.s6-cmp tbody th {
+  font-weight: 500;
+  color: var(--global-text-13, #d1d5db);
+  white-space: nowrap;
+}
+
+table.s6-cmp td { color: var(--s6-body); }
+table.s6-cmp tr:last-child th,
+table.s6-cmp tr:last-child td { border-bottom: 0; }
+
+table.s6-cmp thead a { color: inherit; text-decoration: none; border-bottom: 1px dotted currentColor; }
+
+.s6-yes { color: var(--s6-accent); font-weight: 700; }
+.s6-no { color: var(--s6-mute); }
+
+.s6-scroll-hint { display: none; margin: 10px 0 0; font-size: 12px; color: var(--s6-mute); }
+@media (max-width: 760px) { .s6-scroll-hint { display: block; } }
+
+/* --------------------------------------------------------- §6 pricing */
+
+.s6-price-box {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 34px;
+  border: 1px solid var(--s6-line);
+  border-radius: 14px;
+  overflow: hidden;
+  text-align: left;
+}
+
+.s6-price-box > div { padding: 30px; }
+
+.s6-price-box > div:first-child {
+  background: var(--s6-band);
+  border-right: 1px solid var(--s6-line);
+}
+
+.s6-price-box > div:last-child { background: var(--s6-surface); }
+
+.s6-big {
+  font-size: 40px;
+  font-weight: 750;
+  letter-spacing: -0.035em;
+  line-height: 1.05;
+  color: #fff;
+}
+
+.s6-big small {
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: #9db3a7;
+}
+
+.s6-price-box p {
+  margin: 12px 0 0;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--s6-body);
+}
+
+.s6-price-box h3 {
+  margin: 0 0 14px;
+  font-size: 16.5px;
+  font-weight: 700;
+  color: #fff;
+}
+
+ul.s6-incl { list-style: none; margin: 0; padding: 0; display: grid; gap: 9px; }
+
+ul.s6-incl li {
+  position: relative;
+  padding-left: 24px;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--s6-body);
+}
+
+ul.s6-incl li:before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 5px;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: rgba(0, 224, 122, 0.14);
+  box-shadow: inset 0 0 0 1.5px var(--s6-accent);
+}
+
+.s6-statutory { margin: 18px 0 0; font-size: 12.5px; line-height: 1.6; color: var(--s6-mute); }
+.s6-statutory a { color: var(--s6-accent); text-decoration: none; }
+
+@media (max-width: 820px) {
+  .s6-price-box { grid-template-columns: minmax(0, 1fr); }
+  .s6-price-box > div:first-child { border-right: 0; border-bottom: 1px solid var(--s6-line); }
+  .s6-big { font-size: 32px; }
+}
+
+/* ----------------------------------------------------------- §7 steps */
+
+.s6-steps { counter-reset: s6step; }
+
+.s6-step { counter-increment: s6step; }
+
+.s6-step:before {
+  content: counter(s6step);
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  margin-bottom: 14px;
+  border-radius: 50%;
+  background: var(--s6-accent);
+  color: #06120c;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.s6-reqs {
+  margin-top: 22px;
+  padding: 16px 18px;
+  border: 1px solid var(--s6-line-soft);
+  border-radius: 12px;
+  background: var(--s6-surface);
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--s6-body);
+  text-align: left;
+}
+
+.s6-reqs b { color: #fff; font-weight: 650; }
+
+/* ----------------------------------------------------------- §8 trust */
+
+.s6-trust-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 34px;
+}
+
+.s6-stat {
+  padding: 22px 16px;
+  border: 1px solid var(--s6-line-soft);
+  border-radius: 14px;
+  background: var(--s6-surface);
+  text-align: center;
+}
+
+.s6-stat-n {
+  font-size: 26px;
+  font-weight: 750;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: var(--s6-accent);
+}
+
+.s6-stat-l { margin: 6px 0 0; font-size: 13px; line-height: 1.5; color: var(--s6-body); }
+.s6-stat-l a { color: #fff; text-decoration: none; border-bottom: 1px solid var(--s6-accent); }
+
+@media (max-width: 860px) {
+  .s6-trust-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .s6-stat-n { font-size: 22px; }
+}
+
+/* ------------------------------------------------- §10 closing CTA band */
+
+section.s6-final { background: var(--s6-band); }
+
+.s6-final p.s6-lead { color: #9db3a7; }
+
+.s6-disc {
+  margin: 34px auto 0;
+  max-width: 76ch;
+  font-size: 12.5px;
+  line-height: 1.75;
+  color: var(--s6-mute);
+}
+
+/* --------------------------------------------------------- hero additions */
+
+.s6-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+  padding: 6px 14px;
+  border: 1px solid var(--s6-line);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--global-text-13, #d1d5db);
+}
+
+.s6-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--s6-accent);
+  box-shadow: 0 0 0 3px rgba(0, 224, 122, 0.2);
+}
+
+.s6-micro {
+  margin: 14px 0 0;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--s6-mute);
+}
+
+/* ------------------------------- §4 feature deep-dives (the analytics block) ==
+ *
+ * The mockup's §4 runs five deep-dives. Three were already on the page (the
+ * layout gallery, the four-mode chain, trade-from-chart); these are the two it
+ * was missing: Strategy Chart, the F&O screeners and max pain.
+ *
+ * The panels are HTML stand-ins for the real widget screenshots, built from the
+ * values in those screenshots (25-Aug-2026 expiry session, ~10:05 am). Swap each
+ * .s6-shot for an <img> the moment the PNGs land in /tp/s6/.
+ */
+
+.s6-feat {
+  display: grid;
+  grid-template-columns: 1fr 1.08fr;
+  gap: 44px;
+  align-items: center;
+  padding: 36px 0;
+  border-bottom: 1px solid var(--s6-line-soft);
+  text-align: left;
+}
+
+.s6-feat:last-child { border-bottom: 0; padding-bottom: 0; }
+.s6-feat.s6-rev > div:first-child { order: 2; }
+
+.s6-feat h3 {
+  margin: 0 0 10px;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  color: #fff;
+}
+
+.s6-feat p { margin: 0; max-width: 60ch; font-size: 14px; line-height: 1.65; color: var(--s6-body); }
+.s6-feat ul { list-style: none; margin: 16px 0 0; padding: 0; display: grid; gap: 8px; }
+
+.s6-feat li {
+  position: relative;
+  padding-left: 24px;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--s6-body);
+}
+
+.s6-feat li:before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 5px;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: rgba(0, 224, 122, 0.14);
+  box-shadow: inset 0 0 0 1.5px var(--s6-accent);
+}
+
+@media (max-width: 940px) {
+  .s6-feat { grid-template-columns: minmax(0, 1fr); gap: 24px; padding: 26px 0; }
+  .s6-feat.s6-rev > div:first-child { order: 0; }
+  .s6-feat h3 { font-size: 19px; }
+}
+
+/* the terminal frame */
+.s6-shot {
+  min-width: 0;
+  padding: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  background: #0e1114;
+  box-shadow: 0 18px 44px -22px rgba(0, 0, 0, 0.8);
+}
+
+.s6-shot-bar { display: flex; align-items: center; gap: 6px; padding: 4px 6px 9px; }
+
+.s6-tab {
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: #1a1f24;
+  font-size: 11px;
+  color: #8fa79a;
+  white-space: nowrap;
+}
+
+.s6-tab.on { background: rgba(0, 224, 122, 0.16); color: var(--s6-accent); font-weight: 650; }
+
+.s6-shot-meta { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 6px 9px; }
+
+.s6-chip {
+  padding: 3px 8px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 5px;
+  font-size: 10.5px;
+  color: var(--s6-mute);
+  white-space: nowrap;
+}
+
+.s6-chip.on { border-color: rgba(0, 224, 122, 0.4); color: var(--s6-accent); }
+
+.s6-pane { padding: 10px; border-radius: 9px; background: #14181c; }
+.s6-pane + .s6-pane { margin-top: 7px; }
+.s6-pane h4 {
+  margin: 0 0 8px;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #7e968a;
+}
+
+.s6-pane-scroll { overflow-x: auto; }
+
+table.s6-mini { width: 100%; min-width: 300px; border-collapse: collapse; font-size: 11px; color: #d6e2db; }
+
+table.s6-mini th {
+  padding: 5px 6px;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-align: right;
+  color: #7e968a;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+  white-space: nowrap;
+}
+
+table.s6-mini td {
+  padding: 6px;
+  text-align: right;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.045);
+  white-space: nowrap;
+}
+
+table.s6-mini th:first-child,
+table.s6-mini td:first-child { text-align: left; }
+table.s6-mini tr:last-child td { border-bottom: 0; }
+
+.s6-up { color: #12a150; }
+.s6-down { color: #e0483d; }
+
+.s6-trend { display: inline-block; padding: 2px 8px; border-radius: 5px; font-size: 10px; font-weight: 600; }
+.s6-trend.sc { background: rgba(224, 72, 61, 0.14); color: #f08b83; }
+.s6-trend.lb { background: rgba(18, 161, 80, 0.16); color: #5fd08c; }
+
+.s6-strike { text-align: center !important; background: rgba(255, 255, 255, 0.05); font-weight: 700; color: #fff; }
+table.s6-mini tr.s6-atm td { background: rgba(224, 178, 62, 0.12); }
+
+.s6-svg { display: block; width: 100%; height: auto; }
+
+.s6-legend { display: flex; gap: 14px; margin-top: 8px; font-size: 10px; color: var(--s6-mute); }
+.s6-legend span { display: inline-flex; align-items: center; gap: 5px; }
+.s6-swatch { width: 14px; height: 3px; border-radius: 2px; background: #4a9eff; }
+.s6-swatch.dash { background: repeating-linear-gradient(90deg, #9aa5ae 0 4px, transparent 4px 7px); }
+.s6-swatch.call { height: 8px; width: 8px; border-radius: 2px; background: #e0483d; }
+.s6-swatch.put { height: 8px; width: 8px; border-radius: 2px; background: #12a150; }
+
+.s6-cap { margin: 9px 0 0; font-size: 10.5px; line-height: 1.5; color: var(--s6-mute); }
+
+/* A scrolling pane needs to look scrollable. The comparison table says so in
+ * words; these panes are too small for a caption, so they get the pure-CSS
+ * scroll-shadow trick instead: the local-attachment layers scroll away with the
+ * content, the fixed layers stay put, so the cue shows only on the side that
+ * still has content off-screen. The usual black shadow is invisible on a pane
+ * this dark, so the cue is a light edge rather than a shadow. */
+.s6-pane-scroll {
+  background:
+    linear-gradient(to right, #14181c 40%, rgba(20, 24, 28, 0)) left center,
+    linear-gradient(to left, #14181c 40%, rgba(20, 24, 28, 0)) right center,
+    radial-gradient(farthest-side at 0 50%, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0)) left center,
+    radial-gradient(farthest-side at 100% 50%, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0)) right center;
+  background-repeat: no-repeat;
+  background-size: 30px 100%, 30px 100%, 18px 100%, 18px 100%;
+  background-attachment: local, local, scroll, scroll;
+}

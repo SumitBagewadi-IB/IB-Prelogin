@@ -12,6 +12,14 @@
       a: "Trade Pro is a powerful web-based trading terminal that lets you manage your portfolio, analyze charts, trade options, and execute orders all from one place with minimal clicks."
     },
     {
+      q: "Is Trade Pro free?",
+      a: "Yes. Trade Pro is included with every Indiabulls Securities trading account. There is no platform fee, no monthly subscription and no data charge. You pay brokerage on the orders you place, plus statutory charges as levied."
+    },
+    {
+      q: "Do I need to install anything?",
+      a: "No. Trade Pro runs in any modern browser: Chrome, Edge, Firefox or Safari. Your layouts are saved to your account, so any machine you log in from looks the same."
+    },
+    {
       q: "Can I customize my workspace layout?",
       a: "Yes. You can choose from six ready-made layouts or create your own by dragging and resizing panels. Every workspace you design is saved for instant access on your next login."
     },
@@ -30,6 +38,22 @@
     {
       q: "What instruments can I trade?",
       a: "Equities, F&O (futures and options), commodities, currencies, and more. Trade Pro supports all instruments available on the Indiabulls Securities platform."
+    },
+    {
+      q: "Can I place multi-leg option strategies?",
+      a: "Yes. Build the position in Strategy Charts, check the payoff and the margin it needs, then send every leg from a single ticket instead of one order at a time."
+    },
+    {
+      q: "Are the charts real TradingView charts?",
+      a: "Yes. The TradingView charting engine is built into the terminal, with its indicators and drawing tools. No separate TradingView subscription is needed."
+    },
+    {
+      q: "Can I use Trade Pro alongside Power Indiabulls?",
+      a: "Yes. One account works across all our platforms and your positions are common between them, so you can start an order on one and manage it on another."
+    },
+    {
+      q: "What if I get stuck?",
+      a: "Support is reachable from inside the terminal, or on 022-61446300 during market hours. The FAQ and help centre cover the common setup questions."
     }
   ];
 
